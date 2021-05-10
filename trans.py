@@ -1,6 +1,5 @@
+# 废弃，只是用来进行数据实验
 import numpy as np
-import ImageProcess
-import LineProcessing
 
 
 def trans_test(original):
@@ -54,8 +53,21 @@ def line_set2():
     l2 = [[289, 318, 289, 160]]
     l3 = [[288, 318, 288, 158]]
     l4 = [[140, 333, 181, 242]]
-    line_tuple2 = [l1, l2, l3, l4]
+    l5 = [[132, 567, 466, 345]]
+    line_tuple2 = [l1, l2, l3, l4, l5]
     return line_tuple2
+
+
+def print_test(ori):
+    print(ori[0])
+    print(ori[0][0])
+    print(ori[4][0][3])
+    t=1
+    for i in range(0, 5):
+        for j in range(0, 4):
+            print(t)
+            print(ori[i][0][j])
+            t += 1
 
 
 def rank(elem):                     # 排序，本来用elem.sort（），但是后来失败了，不知道原因
@@ -65,8 +77,16 @@ def rank(elem):                     # 排序，本来用elem.sort（），但是
 def takefirst(arr):
     return arr[0][0]
 
+
+def trans_try(ori):
+    new = np.zeros((5, 4))
+    for i in (0, 5):
+        for j in (0, 4):
+            new[i][j] = ori[i][0][j]
+    return new
+
+
 if __name__ == '__main__':
-    lines = line_set()
-    print(lines)
-    lines.sort()
-    lines2 = line_set2()
+    a = line_set2()
+    a[np.lexsort()]
+    # arr[np.lexsort(arr[:,::-1].T)]

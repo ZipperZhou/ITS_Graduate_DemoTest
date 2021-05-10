@@ -3,6 +3,7 @@ import numpy as np
 import trans
 import LineProcessing
 
+
 # 读取图片、调整尺寸、灰度化
 def readphoto(img_path):
     Photo0 = cv2.imread(img_path, flags=cv2.IMREAD_COLOR)
@@ -47,7 +48,7 @@ def process(Photo):
     cv2.waitKey()
     '''
     # canny
-    Photo_canny = cv2.Canny(binary, 300, 200, 3)
+    Photo_canny = cv2.Canny(binary, 350, 200, 3)
     cv2.imshow('canny', Photo_canny)
     cv2.waitKey()
 
@@ -85,7 +86,7 @@ def process(Photo):
 
 def HoughChange(Photo, edge_canny, edge_sobel, erode_dilate):  # edge means 边缘
     # 进阶的Hough检测
-    lines_C = cv2.HoughLinesP(erode_dilate, rho=2, theta=3 * np.pi / 180, threshold=30, minLineLength=48, maxLineGap=5)
+    lines_C = cv2.HoughLinesP(erode_dilate, rho=2, theta=3 * np.pi / 180, threshold=50, minLineLength=50, maxLineGap=5)
     for i in range(len(lines_C)):  # range计数，len长度
         x_1, y_1, x_2, y_2 = lines_C[i][0]
         cv2.line(Photo, (x_1, y_1), (x_2, y_2), (0, 255, 0), 1)
@@ -130,15 +131,27 @@ def origin_line_count_get(elem):
 
 # hough的结果赋给新数组，ori原生数组，prepro待处理的新数组
 # 第一个数是行数（第n个元组），第二个数是0，第三个数是列数（元组内第n个元素）
-def originlines_Trans_Preprolines(dimension, ori, prepro):  # dimension维
+def originlines_Trans_Preprolines(dimension, ori):  # dimension维
+    prepro = np.zeros((dimension, 4))
     for i in range(0, dimension):
         for j in range(0, 4):
+            # print(ori[i][0][j], '   ', t)
             prepro[i][j] = ori[i][0][j]
     return prepro
 
 
-def line_select(lines):
-    pass
+# 废弃
+def threeToTwo(ori, prepro):
+    for twoNum in ori:
+        for oneNum in twoNum:
+            prepro.append(oneNum)
+    return prepro
+
+
+def site_confirm(Photo):
+    cv2.line(Photo, (3, 3), (100, 150), (0, 255, 255), 4)
+    cv2.imshow('site_confirm_test', Photo)
+    cv2.waitKey()
 
 
 def AllPrepareingProcessing():
@@ -153,9 +166,14 @@ def AllPrepareingProcessing():
     # hough函数: input: 原图，canny图，sobel图， 一次e&r图
     origin_lines = HoughChange(img_resize, imgCanny, imgSobel, imgErodeDilate)
     size = origin_line_count_get(origin_lines)
-    lines = np.zeros((size, 4))
+
     # trans.trans_test(origin_lines)  # 提取hough结果赋值新数组，二维数组：num*4
-    ready_pro_line = originlines_Trans_Preprolines(size, origin_lines, lines)
+    ready_pro_line = originlines_Trans_Preprolines(size, origin_lines)
+
+    #try:三维-二维，二维-二维
+    # ready_pro_line = threeToTwo(origin_lines, conduct_lines)
+    print(ready_pro_line)
+    site_confirm(img_resize)
     return ready_pro_line
 
 
