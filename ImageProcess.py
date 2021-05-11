@@ -23,11 +23,11 @@ def resize_photo(imgArr, MAX_WIDTH=600):
 def check_size(Photo):
     sp = Photo.shape
     print("size=", sp)  # 查看图片大小
-    sz1 = sp[0]  # height(rows) of image
-    sz2 = sp[1]  # width(colums) of image
+    sz1 = sp[0]  # width(rows) of image
+    sz2 = sp[1]  # heights(colums) of image
     sz3 = sp[2]  # the pixels value is made up of three primary colors
     print('width: %d \nheight: %d \nnumber: %d' % (sz1, sz2, sz3))
-    pass
+    return sz1, sz2
 
 
 def process(Photo):
@@ -148,17 +148,29 @@ def threeToTwo(ori, prepro):
     return prepro
 
 
+# 为了确定参考系，画条线看看
 def site_confirm(Photo):
     cv2.line(Photo, (3, 3), (100, 150), (0, 255, 255), 4)
     cv2.imshow('site_confirm_test', Photo)
     cv2.waitKey()
+
+def pp2value():
+    path = r'D:/graduate/test/13.jpg'
+    img0 = readphoto(path)
+    img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
+    check_size(img_resize)
+    cv2.imshow('resize', img_resize)
+    cv2.waitKey()
+    # process函数：input：原图；  return binary（二值图）, erode_dilate（一次e&r图）, Photo_Canny, dst_sobel（sobel图）
+    img_bin, imgErodeDilate, imgCanny, imgSobel = process(img_resize)
+    return img_resize, img_bin
 
 
 def AllPrepareingProcessing():
     path = r'D:/graduate/test/13.jpg'
     img0 = readphoto(path)
     img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
-    check_size(img_resize)
+    width, length = check_size(img_resize)
     cv2.imshow('resize', img_resize)
     cv2.waitKey()
     # process函数：input：原图；  return binary（二值图）, erode_dilate（一次e&r图）, Photo_Canny, dst_sobel（sobel图）

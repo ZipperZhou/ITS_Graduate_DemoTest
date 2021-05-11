@@ -85,8 +85,7 @@ def endpoint_y(lines, i):
 
 if __name__ == '__main__':
     prelines = ImageProcess.AllPrepareingProcessing()
-
-    print(prelines)
+    # print(prelines)
     count = line_num(prelines)  # 直线数量
     print('start Line process')
     line_raise = line_rank_py(prelines)
