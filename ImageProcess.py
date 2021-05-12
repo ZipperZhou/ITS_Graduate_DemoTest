@@ -53,14 +53,14 @@ def process(Photo):
     cv2.waitKey()
 
     # 试着做膨胀腐蚀处理
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 1))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 2))
     kernelBig = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 5))
     kernelX = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 4))
     kernelY = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 3))
 
-    erode_dilate = cv2.dilate(Photo_canny, kernel)
+    erode_dilate = cv2.dilate(binary, kernel)
     cv2.imshow('dilate', erode_dilate)
-    erode_dilate = cv2.erode(erode_dilate, kernelX)
+    erode_dilate = cv2.erode(erode_dilate, kernel)
     cv2.imshow('erode', erode_dilate)
     '''
     erode_dilate = cv2.dilate(erode_dilate, kernelY)
@@ -153,6 +153,7 @@ def site_confirm(Photo):
     cv2.line(Photo, (3, 3), (100, 150), (0, 255, 255), 4)
     cv2.imshow('site_confirm_test', Photo)
     cv2.waitKey()
+
 
 def pp2value():
     path = r'D:/graduate/test/13.jpg'
