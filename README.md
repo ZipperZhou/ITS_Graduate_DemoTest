@@ -22,8 +22,8 @@ test for clone ,upload, and design
 	取一条中线	 fetch_middle_line(lines, num):
 	按顺序将中线上的点的int型坐标拿出来    right_allY_print_int_site(floatLine)，输入为一根中线,return 横坐标数组， 纵坐标数组（按顺序的，是对应的）
 	pick_valueTo_uni_dimension(x_site, y_site):
-	# 按顺序将中线上每一个点的灰度值填入一个一维数组
-get_gray_value(a, b, img_binary_get):   # 获取（x, y）的灰度值 # 输入的是横纵坐标，输出的却是纵横坐标
+	按顺序将中线上每一个点的灰度值填入一个一维数组
+	get_gray_value(a, b, img_binary_get):   # 获取（x, y）的灰度值 # 输入的是横纵坐标，输出的却是纵横坐标
 	
 
 问题：输出的像素值数组为全0，（灰度0表示黑，灰度255表示白），可是从运行图（drawOn2value.jpg）可明显观察到，中线是经过了很多白色的点的。大师救我！
