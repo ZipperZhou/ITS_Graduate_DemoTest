@@ -51,7 +51,7 @@ def false_allX_print_int_site(floatLine):  # 输入的是floatLine两端点
 
 # 按顺序将中线上的点的int型坐标拿出来
 # 中线上的每个点坐标（转换为int类型），返回两个数组，一个横坐标数组，一个纵坐标数组，横坐标++
-# 错误做法：不应该遍历横坐标应该遍历纵坐标
+# 正确做法，遍历纵坐标
 def right_allY_print_int_site(floatLine):  # 输入的是floatLine两端点
     # y - y2 = k(x - x2)        y2 = 0, x2 = floatLine[2]
     # x[g] = y[g]/k +x2
@@ -75,9 +75,9 @@ def pick_valueTo_uni_dimension(x_site, y_site):
     array_gray_data = np.zeros(width, dtype=int) 
     print('一维数组size=', width)
     for s in range(0, width):
-        array_gray_data[s] = get_gray_value(x_site[s], y_site[s], img2value)
-        print(x_site[s], y_site[s], array_gray_data[s])
-    # print('灰度值一维数组：', array_gray_data)
+        array_gray_data[s] = get_gray_value(x_site[s], y_site[s], img2value_copy)
+        # print(x_site[s], y_site[s], array_gray_data[s])
+    print('灰度值一维数组：', array_gray_data)
     return array_gray_data  # 返回一个一维数组
 
 
@@ -91,6 +91,7 @@ def detect_continuous_zero():
 
 if __name__ == '__main__':
     img, img2value, complete_middle_lines = trailConfirm.trail_confirm_all()
+    img2value_copy = img2value.copy()
     cv2.waitKey()
     cv2.destroyAllWindows()
     # 在二值图上绘制中线
