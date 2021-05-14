@@ -183,7 +183,7 @@ def AllPrepareingProcessing():
     # trans.trans_test(origin_lines)  # 提取hough结果赋值新数组，二维数组：num*4
     ready_pro_line = originlines_Trans_Preprolines(size, origin_lines)
 
-    #try:三维-二维，二维-二维
+    # try:三维-二维，二维-二维
     # ready_pro_line = threeToTwo(origin_lines, conduct_lines)
     print(ready_pro_line)
     site_confirm(img_resize)
