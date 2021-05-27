@@ -4,6 +4,9 @@ import trans
 import LineProcessing
 
 
+path = r'D:/graduate/test/32.jpg'
+
+
 # 读取图片、调整尺寸、灰度化
 def readphoto(img_path):
     Photo0 = cv2.imread(img_path, flags=cv2.IMREAD_COLOR)
@@ -39,7 +42,7 @@ def process(Photo):
     # 高斯滤波
     blur = cv2.GaussianBlur(Photo_gray, (5, 5), 0)
     # 二值化
-    ret, binary = cv2.threshold(blur, 130, 255, cv2.THRESH_BINARY)
+    ret, binary = cv2.threshold(blur, 132, 255, cv2.THRESH_BINARY)
     cv2.imshow('2value', binary)
     cv2.waitKey()
     '''OTSU二值化
@@ -86,7 +89,10 @@ def process(Photo):
 
 def HoughChange(Photo, edge_canny, edge_sobel, erode_dilate):  # edge means 边缘
     # 进阶的Hough检测
-    lines_C = cv2.HoughLinesP(erode_dilate, rho=2, theta=3 * np.pi / 180, threshold=50, minLineLength=50, maxLineGap=5)
+    ret2, T_2SOBEL = cv2.threshold(edge_canny, 127, 255, cv2.THRESH_BINARY)
+    # lines_C = cv2.HoughLinesP(T_2SOBEL, rho=2, theta=3 * np.pi / 180, threshold=48, minLineLength=60, maxLineGap=5)
+    # essay
+    lines_C = cv2.HoughLinesP(T_2SOBEL, rho=2, theta=2 * np.pi / 180, threshold=40, minLineLength=45, maxLineGap=5)
     for i in range(len(lines_C)):  # range计数，len长度
         x_1, y_1, x_2, y_2 = lines_C[i][0]
         cv2.line(Photo, (x_1, y_1), (x_2, y_2), (0, 255, 0), 1)
@@ -156,7 +162,7 @@ def site_confirm(Photo):
 
 
 def pp2value():
-    path = r'D:/graduate/test/13.jpg'
+
     img0 = readphoto(path)
     img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
     check_size(img_resize)
@@ -168,7 +174,6 @@ def pp2value():
 
 
 def AllPrepareingProcessing():
-    path = r'D:/graduate/test/13.jpg'
     img0 = readphoto(path)
     img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
     width, length = check_size(img_resize)

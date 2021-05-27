@@ -145,9 +145,9 @@ def if_first_level(count_p):
 def figure_real_trail(length):
     # L=h * tan[arctan(d/h) +α] -d
     # 理论请见：physicsFigureLength 以及 physicsFigureLengthReadMe
-    h = 7.5  # 米
+    h = 6.2  # 米
     d_min = 20  # 米
-    d_max = 150
+    d_max = 220
     d = width - trail
     a = (math.atan(d_max/h))/width      # should be (arctan(d_max/h)) / width
     # a是摄像头安装角度/拍摄到的上下边实际长度
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     width, height = trailConfirm.get_pic_size(img)
     # 起测点：2/3*width
     init_check_point = int((2 / 3) * width)  # 起测点
-    criterion = 23  # criterion 标准（阈值）
+    criterion = 22  # criterion 标准（阈值）
     trail_arr = np.zeros(3, dtype=int)      # 三列队尾位置数组
     # 第一种思路
     # 第一次撰写过程中犯了很大的错误，错误在于，求出了每一个x，实际上我们要输出的是每一个y
@@ -197,11 +197,10 @@ if __name__ == '__main__':
         trail_arr[i] = trail
         real_length = figure_real_trail(trail)
         print('real_length=', real_length)
-        pic_final = cv2.line(img, (100, trail), (400, trail), (255, 0 , 255), 4)
+        pic_final = cv2.line(img, (100, trail), (400, trail), (255, 0, 255), 2)
         cv2.imshow('final', pic_final)
         cv2.waitKey()
     # 开始计算实际物理长度
-
 
     # 第二种思路,论文撰写
     # 先转化像素点代表长度，再转化为检测长度
