@@ -2,7 +2,8 @@ import numpy as np
 import ImageProcess
 from pprint import pprint as pp
 import trans
-
+path1 = '31.jpg'
+path2 = '32.jpg'
 
 # 得到第a个二维数组(第一个是array【0】)，并且打印这个元组
 def takeTuple(array, a):
@@ -84,7 +85,7 @@ def endpoint_y(lines, i):
 
 
 if __name__ == '__main__':
-    prelines = ImageProcess.AllPrepareingProcessing()
+    prelines = ImageProcess.AllPrepareingProcessing(ImageProcess.path3)
     # print(prelines)
     count = line_num(prelines)  # 直线数量
     print('start Line process')

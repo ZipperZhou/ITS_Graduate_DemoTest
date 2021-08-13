@@ -4,7 +4,9 @@ import trans
 import LineProcessing
 
 
-path = r'D:/graduate/test/32.jpg'
+path1 = '31.jpg'
+path2 = '32.jpg'
+path3 = '13.jpg'
 
 
 # 读取图片、调整尺寸、灰度化
@@ -34,15 +36,21 @@ def check_size(Photo):
 
 
 def process(Photo):
+    kerenlerode5 = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    kernelerode9 = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
     # 复制出一个直线检测图
     # 灰度变化
     Photo_gray = cv2.cvtColor(Photo, cv2.COLOR_BGR2GRAY)
     cv2.imshow('Photo_gray', Photo_gray)
     cv2.waitKey()
+    #noise
     # 高斯滤波
     blur = cv2.GaussianBlur(Photo_gray, (5, 5), 0)
+    cv2.imshow('gaosp', blur)
+    blur2 =cv2.GaussianBlur(Photo_gray, (9, 9), 0)
+    cv2.imshow('gaosp99', blur2)
     # 二值化
-    ret, binary = cv2.threshold(blur, 132, 255, cv2.THRESH_BINARY)
+    ret, binary = cv2.threshold(blur, 139, 255, cv2.THRESH_BINARY)
     cv2.imshow('2value', binary)
     cv2.waitKey()
     '''OTSU二值化
@@ -60,6 +68,9 @@ def process(Photo):
     kernelBig = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 5))
     kernelX = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 4))
     kernelY = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 3))
+
+
+
 
     erode_dilate = cv2.dilate(binary, kernel)
     cv2.imshow('dilate', erode_dilate)
@@ -83,6 +94,8 @@ def process(Photo):
     cv2.imshow('absY', absY)
     cv2.imshow('soble', dst_sobel)
     cv2.waitKey()
+
+
 
     return binary, erode_dilate, Photo_canny, dst_sobel
 
@@ -161,7 +174,7 @@ def site_confirm(Photo):
     cv2.waitKey()
 
 
-def pp2value():
+def pp2value(path):
 
     img0 = readphoto(path)
     img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
@@ -173,7 +186,7 @@ def pp2value():
     return img_resize, img_bin
 
 
-def AllPrepareingProcessing():
+def AllPrepareingProcessing(path):
     img0 = readphoto(path)
     img_resize = resize_photo(img0)  # img1是调节尺寸后的图片
     width, length = check_size(img_resize)

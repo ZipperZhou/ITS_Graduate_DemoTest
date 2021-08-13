@@ -2,15 +2,8 @@ import cv2
 import numpy as np
 import ImageProcess
 import LineProcessing
-
-
-def set_lane():
-    lines = [[9, 338, 74, 261],
-             [145, 333, 200, 211],
-             [302, 318, 302, 157],
-             [352, 163, 373, 216]]
-    return lines
-
+path1 = '31.jpg'
+path2 = '32.jpg'
 
 def get_lane(lanes, num):
     return lanes[num]
@@ -138,11 +131,24 @@ def draw_middleLine(img, draw_line, rough):
 
 
 '''
-if __name__ == '__main__':
+def set_lane():
+    lines = [[9, 338, 74, 261],
+             [145, 333, 200, 211],
+             [302, 318, 302, 157],
+             [352, 163, 373, 216]]
+    return lines
 '''
 
 
-def trail_confirm_all():
+def set_lane():
+    lines = [[4, 338, 72, 261],
+             [140, 333, 200, 211],
+             [290, 318, 284, 157],
+             [359, 163, 384, 216]]
+    return lines
+
+
+def trail_confirm_all(path):
     done_line = set_lane()        # 确定车道线合集
     done_line_copy = done_line.copy()
     print('车道线：', done_line)
@@ -155,10 +161,10 @@ def trail_confirm_all():
     true_middle_lines = aggregate_middle_line(updated_done_line)
     # 绘制中线
     print('start drawing primary img')
-    img_color, img_binary = ImageProcess.pp2value()
+    img_color, img_binary = ImageProcess.pp2value(path)
     img_binary2 = img_binary.copy()
     # draw_middleLine(img_color, fake_middle_line_gathers, 3)
-    draw_middleLine(img_color, true_middle_lines, 3)
+    draw_middleLine(img_color, true_middle_lines, 2)
     return img_color, img_binary, true_middle_lines
 
 

@@ -5,7 +5,10 @@ import LineProcessing
 import trailConfirm
 import cv2
 import numpy as np
+import timeRG
 
+path1 = '31.jpg'
+path2 = '32.jpg'
 
 '''
 # 二值图输出的实验
@@ -81,11 +84,11 @@ def get_gray_value(a, b, img_binary_get):  # 输入的是横纵坐标，输出�
 
 
 # 按顺序将灰度值填入一个一维数组
-def pick_valueTo_uni_dimension(x_site, y_site):
+def pick_valueTo_uni_dimension(x_site, y_site, copy):
     array_gray_data = np.zeros(width, dtype=int)
     print('一维数组size=', width)
     for s in range(0, width):
-        array_gray_data[s] = get_gray_value(x_site[s], y_site[s], img2value_copy)
+        array_gray_data[s] = get_gray_value(x_site[s], y_site[s], copy)
         # print(x_site[s], y_site[s], array_gray_data[s])
     print('灰度值一维数组：', array_gray_data)
     return array_gray_data  # 返回一个一维数组
@@ -143,25 +146,28 @@ def if_first_level(count_p):
 
 # 计算物理世界实际拥塞长度
 def figure_real_trail(length):
-    # L=h * tan[arctan(d/h) +α] -d
-    # 理论请见：physicsFigureLength 以及 physicsFigureLengthReadMe
-    h = 6.2  # 米
-    d_min = 20  # 米
-    d_max = 220
-    d = width - trail
-    a = (math.atan(d_max/h))/width      # should be (arctan(d_max/h)) / width
-    # a是摄像头安装角度/拍摄到的上下边实际长度
-    # 这里估计为180m(d_max), arctan(180/7.5) = 87.6° 垂直分辨率width=339，则
-    before_L = math.atan(d_min/h)+a
-    print('tan=', math.tan(before_L))
-    L = h*(math.tan(before_L)) - d_min
-    print('before = ', before_L)
-    print('L = ', L)
-    return (width - length)*L-d_min
+    if length != 0:
+        # L=h * tan[arctan(d/h) +α] -d
+        # 理论请见：physicsFigureLength 以及 physicsFigureLengthReadMe
+        h = 3.8  # 米
+        d_min = 15  # 米
+        d_max = 200
+        d = width - trail
+        a = (math.atan(d_max/h))/width      # should be (arctan(d_max/h)) / width
+        # a是摄像头安装角度/拍摄到的上下边实际长度
+        # 这里估计为180m(d_max), arctan(180/7.5) = 87.6° 垂直分辨率width=339，则
+        before_L = math.atan(d_min/h)+a
+        print('tan=', math.tan(before_L))
+        L = h*(math.tan(before_L)) - d_min
+        print('before = ', before_L)
+        print('L = ', L)
+        return (width - length)*L-d_min
+    else:
+        return 5
 
 
 if __name__ == '__main__':
-    img, img2value, complete_middle_lines = trailConfirm.trail_confirm_all()
+    img, img2value, complete_middle_lines = trailConfirm.trail_confirm_all(path1)
     img2value_copy = img2value.copy()
     cv2.waitKey()
     cv2.destroyAllWindows()
@@ -169,20 +175,21 @@ if __name__ == '__main__':
     trailConfirm.draw_middleLine(img2value, complete_middle_lines, rough=2)
     width, height = trailConfirm.get_pic_size(img)
     # 起测点：2/3*width
-    init_check_point = int((2 / 3) * width)  # 起测点
-    criterion = 22  # criterion 标准（阈值）
-    trail_arr = np.zeros(3, dtype=int)      # 三列队尾位置数组
+    init_check_point = int((3 / 4) * width)  # 起测点
+    criterion = 19  # criterion 标准（阈值）
+    trail_arr = np.zeros(6, dtype=int)      # 三列队尾位置数组
     # 第一种思路
     # 第一次撰写过程中犯了很大的错误，错误在于，求出了每一个x，实际上我们要输出的是每一个y
     # 输出每一个x的话，会在纵向方向上跳过很多个点，导致根本看不到连续白点的存在，样本（数组长度）也不够339个
     # 从图像宽度的2/3处开始检测，因为有车不往前停
+    real_length = np.zeros(6)
     for i in range(0, 3):
         # 取一根中线
         ready_toProcess_midLine = fetch_middle_line(complete_middle_lines, i)
         # 按顺序将中线上的点的int型坐标拿出来
         x_pos, y_pos = right_allY_print_int_site(ready_toProcess_midLine)
         # 按顺序将灰度值填入一个一维数组
-        gray_value_gather = pick_valueTo_uni_dimension(x_pos, y_pos)
+        gray_value_gather = pick_valueTo_uni_dimension(x_pos, y_pos, img2value_copy)
         # gray_value_gather : 一维数组{0，255}
         # 检测连续0长度
         got_it, trail = check_apieceZero(gray_value_gather, init_check_point)
@@ -195,8 +202,8 @@ if __name__ == '__main__':
         if one_level:
             trail = 0
         trail_arr[i] = trail
-        real_length = figure_real_trail(trail)
-        print('real_length=', real_length)
+        real_length[i] = figure_real_trail(trail)
+        print('real_length=', real_length[i])
         pic_final = cv2.line(img, (100, trail), (400, trail), (255, 0, 255), 2)
         cv2.imshow('final', pic_final)
         cv2.waitKey()
@@ -204,3 +211,33 @@ if __name__ == '__main__':
 
     # 第二种思路,论文撰写
     # 先转化像素点代表长度，再转化为检测长度
+
+    img, img2value2, complete_middle_lines = trailConfirm.trail_confirm_all(path2)
+    img2value_copy2 = img2value2.copy()
+    cv2.destroyAllWindows()
+    for i in range(0, 3):
+        # 取一根中线
+        ready_toProcess_midLine = fetch_middle_line(complete_middle_lines, i)
+        # 按顺序将中线上的点的int型坐标拿出来
+        x_pos, y_pos = right_allY_print_int_site(ready_toProcess_midLine)
+        # 按顺序将灰度值填入一个一维数组
+        gray_value_gather = pick_valueTo_uni_dimension(x_pos, y_pos, img2value_copy2)
+        # gray_value_gather : 一维数组{0，255}
+        # 检测连续0长度
+        got_it, trail = check_apieceZero(gray_value_gather, init_check_point)
+        if got_it:
+            print('找到队尾，纵坐标为：', trail)
+        else:
+            trail = width
+            print('没有找到队尾, 完全拥塞，拥塞长度：trail =', trail)
+        one_level = if_first_level(trail)
+        if one_level:
+            trail = 0
+        trail_arr[i+3] = trail
+        real_length[i+3] = figure_real_trail(trail)
+        print('real_length=', real_length[i+3])
+        pic_final = cv2.line(img, (100, trail), (400, trail), (255, 0, 255), 2)
+        cv2.imshow('final', pic_final)
+        cv2.waitKey()
+
+    timeRG.AllTimeRG(real_length )
